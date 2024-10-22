@@ -99,6 +99,7 @@ public class RedisTemplate<K, V> extends RedisAccessor implements RedisOperation
 
 	@SuppressWarnings("rawtypes") private @Nullable RedisSerializer keySerializer = null;
 	@SuppressWarnings("rawtypes") private @Nullable RedisSerializer valueSerializer = null;
+	@SuppressWarnings("rawtypes") private @Nullable RedisSerializer byteOverheadSerializer = null;
 	@SuppressWarnings("rawtypes") private @Nullable RedisSerializer hashKeySerializer = null;
 	@SuppressWarnings("rawtypes") private @Nullable RedisSerializer hashValueSerializer = null;
 	private RedisSerializer<String> stringSerializer = RedisSerializer.string();
@@ -493,6 +494,14 @@ public class RedisTemplate<K, V> extends RedisAccessor implements RedisOperation
 	@Override
 	public RedisSerializer<?> getValueSerializer() {
 		return valueSerializer;
+	}
+
+	public void setByteOverheadValueSerializer(RedisSerializer<?> serializer) {
+		this.byteOverheadSerializer = serializer;
+	}
+
+	public RedisSerializer<?> getByteOverheadValueSerializer() {
+		return byteOverheadSerializer;
 	}
 
 	/**

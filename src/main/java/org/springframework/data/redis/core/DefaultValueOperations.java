@@ -38,9 +38,9 @@ import org.springframework.lang.Nullable;
  * @author Christoph Strobl
  * @author Jiahe Cai
  */
-class DefaultValueOperations<K, V> extends AbstractOperations<K, V> implements ValueOperations<K, V> {
+public class DefaultValueOperations<K, V> extends AbstractOperations<K, V> implements ValueOperations<K, V> {
 
-	DefaultValueOperations(RedisTemplate<K, V> template) {
+	public DefaultValueOperations(RedisTemplate<K, V> template) {
 		super(template);
 	}
 

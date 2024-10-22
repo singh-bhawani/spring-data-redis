@@ -16,3 +16,4 @@ out
 work
 *.rdb
 *.aof
+.mvn/.develocity/develocity-workspace-id

@@ -47,10 +47,10 @@ import org.springframework.util.CollectionUtils;
  * @author Mark Paluch
  * @author Denis Zavedeev
  */
-abstract class AbstractOperations<K, V> {
+public abstract class AbstractOperations<K, V> {
 
 	// utility methods for the template internal methods
-	abstract class ValueDeserializingRedisCallback implements RedisCallback<V> {
+	public abstract class ValueDeserializingRedisCallback implements RedisCallback<V> {
 		private Object key;
 
 		public ValueDeserializingRedisCallback(Object key) {
@@ -66,34 +66,34 @@ abstract class AbstractOperations<K, V> {
 		protected abstract byte[] inRedis(byte[] rawKey, RedisConnection connection);
 	}
 
-	final RedisTemplate<K, V> template;
+	public final RedisTemplate<K, V> template;
 
-	AbstractOperations(RedisTemplate<K, V> template) {
+	public AbstractOperations(RedisTemplate<K, V> template) {
 		this.template = template;
 	}
 
-	RedisSerializer keySerializer() {
+	public RedisSerializer keySerializer() {
 		return template.getKeySerializer();
 	}
 
-	RedisSerializer valueSerializer() {
+	public RedisSerializer valueSerializer() {
 		return template.getValueSerializer();
 	}
 
-	RedisSerializer hashKeySerializer() {
+	public RedisSerializer hashKeySerializer() {
 		return template.getHashKeySerializer();
 	}
 
-	RedisSerializer hashValueSerializer() {
+	public RedisSerializer hashValueSerializer() {
 		return template.getHashValueSerializer();
 	}
 
-	RedisSerializer stringSerializer() {
+	public RedisSerializer stringSerializer() {
 		return template.getStringSerializer();
 	}
 
 	@Nullable
-	<T> T execute(RedisCallback<T> callback) {
+	public <T> T execute(RedisCallback<T> callback) {
 		return template.execute(callback, true);
 	}
 
@@ -102,7 +102,7 @@ abstract class AbstractOperations<K, V> {
 	}
 
 	@SuppressWarnings("unchecked")
-	byte[] rawKey(Object key) {
+	public byte[] rawKey(Object key) {
 
 		Assert.notNull(key, "non null key required");
 
@@ -114,12 +114,12 @@ abstract class AbstractOperations<K, V> {
 	}
 
 	@SuppressWarnings("unchecked")
-	byte[] rawString(String key) {
+	public byte[] rawString(String key) {
 		return stringSerializer().serialize(key);
 	}
 
 	@SuppressWarnings("unchecked")
-	byte[] rawValue(Object value) {
+	public byte[] rawValue(Object value) {
 
 		if (valueSerializer() == null && value instanceof byte[]) {
 			return (byte[]) value;
@@ -128,7 +128,7 @@ abstract class AbstractOperations<K, V> {
 		return valueSerializer().serialize(value);
 	}
 
-	byte[][] rawValues(Object... values) {
+	public byte[][] rawValues(Object... values) {
 
 		byte[][] rawValues = new byte[values.length][];
 		int i = 0;
@@ -144,7 +144,7 @@ abstract class AbstractOperations<K, V> {
 	 * @return
 	 * @since 1.5
 	 */
-	byte[][] rawValues(Collection<V> values) {
+	public byte[][] rawValues(Collection<V> values) {
 
 		Assert.notEmpty(values, "Values must not be 'null' or empty.");
 		Assert.noNullElements(values.toArray(), "Values must not contain 'null' value.");
@@ -159,7 +159,7 @@ abstract class AbstractOperations<K, V> {
 	}
 
 	@SuppressWarnings("unchecked")
-	<HK> byte[] rawHashKey(HK hashKey) {
+	public <HK> byte[] rawHashKey(HK hashKey) {
 		Assert.notNull(hashKey, "non null hash key required");
 		if (hashKeySerializer() == null && hashKey instanceof byte[]) {
 			return (byte[]) hashKey;
@@ -167,7 +167,7 @@ abstract class AbstractOperations<K, V> {
 		return hashKeySerializer().serialize(hashKey);
 	}
 
-	<HK> byte[][] rawHashKeys(HK... hashKeys) {
+	public <HK> byte[][] rawHashKeys(HK... hashKeys) {
 
 		byte[][] rawHashKeys = new byte[hashKeys.length][];
 		int i = 0;
@@ -178,7 +178,7 @@ abstract class AbstractOperations<K, V> {
 	}
 
 	@SuppressWarnings("unchecked")
-	<HV> byte[] rawHashValue(HV value) {
+	public <HV> byte[] rawHashValue(HV value) {
 
 		if (hashValueSerializer() == null && value instanceof byte[]) {
 			return (byte[]) value;
@@ -186,7 +186,7 @@ abstract class AbstractOperations<K, V> {
 		return hashValueSerializer().serialize(value);
 	}
 
-	byte[][] rawKeys(K key, K otherKey) {
+	public byte[][] rawKeys(K key, K otherKey) {
 
 		byte[][] rawKeys = new byte[2][];
 
@@ -195,11 +195,11 @@ abstract class AbstractOperations<K, V> {
 		return rawKeys;
 	}
 
-	byte[][] rawKeys(Collection<K> keys) {
+	public byte[][] rawKeys(Collection<K> keys) {
 		return rawKeys(null, keys);
 	}
 
-	byte[][] rawKeys(K key, Collection<K> keys) {
+	public byte[][] rawKeys(K key, Collection<K> keys) {
 
 		byte[][] rawKeys = new byte[keys.size() + (key != null ? 1 : 0)][];
 
@@ -217,7 +217,7 @@ abstract class AbstractOperations<K, V> {
 	}
 
 	@SuppressWarnings("unchecked")
-	Set<V> deserializeValues(Set<byte[]> rawValues) {
+	public Set<V> deserializeValues(Set<byte[]> rawValues) {
 		if (valueSerializer() == null) {
 			return (Set<V>) rawValues;
 		}
@@ -225,7 +225,7 @@ abstract class AbstractOperations<K, V> {
 	}
 
 	@Nullable
-	Set<TypedTuple<V>> deserializeTupleValues(@Nullable Set<Tuple> rawValues) {
+	public Set<TypedTuple<V>> deserializeTupleValues(@Nullable Set<Tuple> rawValues) {
 		if (rawValues == null) {
 			return null;
 		}
@@ -236,7 +236,7 @@ abstract class AbstractOperations<K, V> {
 		return set;
 	}
 
-	List<TypedTuple<V>> deserializeTupleValues(List<Tuple> rawValues) {
+	public List<TypedTuple<V>> deserializeTupleValues(List<Tuple> rawValues) {
 		if (rawValues == null) {
 			return null;
 		}
@@ -249,7 +249,7 @@ abstract class AbstractOperations<K, V> {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Nullable
-	TypedTuple<V> deserializeTuple(@Nullable Tuple tuple) {
+	public TypedTuple<V> deserializeTuple(@Nullable Tuple tuple) {
 		if (tuple == null) {
 			return null;
 		}
@@ -261,7 +261,7 @@ abstract class AbstractOperations<K, V> {
 	}
 
 	@SuppressWarnings("unchecked")
-	Set<Tuple> rawTupleValues(Set<TypedTuple<V>> values) {
+	public Set<Tuple> rawTupleValues(Set<TypedTuple<V>> values) {
 		if (values == null) {
 			return null;
 		}
@@ -279,7 +279,7 @@ abstract class AbstractOperations<K, V> {
 	}
 
 	@SuppressWarnings("unchecked")
-	List<V> deserializeValues(List<byte[]> rawValues) {
+	public List<V> deserializeValues(List<byte[]> rawValues) {
 		if (valueSerializer() == null) {
 			return (List<V>) rawValues;
 		}
@@ -287,7 +287,7 @@ abstract class AbstractOperations<K, V> {
 	}
 
 	@SuppressWarnings("unchecked")
-	<T> Set<T> deserializeHashKeys(Set<byte[]> rawKeys) {
+	public <T> Set<T> deserializeHashKeys(Set<byte[]> rawKeys) {
 		if (hashKeySerializer() == null) {
 			return (Set<T>) rawKeys;
 		}
@@ -295,7 +295,7 @@ abstract class AbstractOperations<K, V> {
 	}
 
 	@SuppressWarnings("unchecked")
-	<T> List<T> deserializeHashKeys(List<byte[]> rawKeys) {
+	public <T> List<T> deserializeHashKeys(List<byte[]> rawKeys) {
 		if (hashKeySerializer() == null) {
 			return (List<T>) rawKeys;
 		}
@@ -303,7 +303,7 @@ abstract class AbstractOperations<K, V> {
 	}
 
 	@SuppressWarnings("unchecked")
-	<T> List<T> deserializeHashValues(List<byte[]> rawValues) {
+	public <T> List<T> deserializeHashValues(List<byte[]> rawValues) {
 		if (hashValueSerializer() == null) {
 			return (List<T>) rawValues;
 		}
@@ -311,7 +311,7 @@ abstract class AbstractOperations<K, V> {
 	}
 
 	@SuppressWarnings("unchecked")
-	<HK, HV> Map<HK, HV> deserializeHashMap(@Nullable Map<byte[], byte[]> entries) {
+	public <HK, HV> Map<HK, HV> deserializeHashMap(@Nullable Map<byte[], byte[]> entries) {
 		// connection in pipeline/multi mode
 
 		if (entries == null) {
@@ -328,7 +328,7 @@ abstract class AbstractOperations<K, V> {
 	}
 
 	@SuppressWarnings("unchecked")
-	K deserializeKey(byte[] value) {
+	public K deserializeKey(byte[] value) {
 		if (keySerializer() == null) {
 			return (K) value;
 		}
@@ -340,7 +340,7 @@ abstract class AbstractOperations<K, V> {
 	 * @return
 	 * @since 1.7
 	 */
-	Set<K> deserializeKeys(Set<byte[]> keys) {
+	public Set<K> deserializeKeys(Set<byte[]> keys) {
 
 		if (CollectionUtils.isEmpty(keys)) {
 			return Collections.emptySet();
@@ -353,19 +353,19 @@ abstract class AbstractOperations<K, V> {
 	}
 
 	@SuppressWarnings("unchecked")
-	V deserializeValue(byte[] value) {
+	public V deserializeValue(byte[] value) {
 		if (valueSerializer() == null) {
 			return (V) value;
 		}
 		return (V) valueSerializer().deserialize(value);
 	}
 
-	String deserializeString(byte[] value) {
+	public String deserializeString(byte[] value) {
 		return (String) stringSerializer().deserialize(value);
 	}
 
 	@SuppressWarnings({ "unchecked" })
-	<HK> HK deserializeHashKey(byte[] value) {
+	public <HK> HK deserializeHashKey(byte[] value) {
 		if (hashKeySerializer() == null) {
 			return (HK) value;
 		}
@@ -373,7 +373,7 @@ abstract class AbstractOperations<K, V> {
 	}
 
 	@SuppressWarnings("unchecked")
-	<HV> HV deserializeHashValue(byte[] value) {
+	public <HV> HV deserializeHashValue(byte[] value) {
 		if (hashValueSerializer() == null) {
 			return (HV) value;
 		}
@@ -388,7 +388,7 @@ abstract class AbstractOperations<K, V> {
 	 * @since 1.8
 	 */
 	@Nullable
-	GeoResults<GeoLocation<V>> deserializeGeoResults(@Nullable GeoResults<GeoLocation<byte[]>> source) {
+	public GeoResults<GeoLocation<V>> deserializeGeoResults(@Nullable GeoResults<GeoLocation<byte[]>> source) {
 
 		if (source == null) {
 			return null;
